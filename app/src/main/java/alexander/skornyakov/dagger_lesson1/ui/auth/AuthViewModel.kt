@@ -23,6 +23,7 @@ class AuthViewModel @Inject constructor(val authApi: AuthApi, val sessionManager
 
             authApi.getUser(userId)
                 .onErrorReturn {
+                    Log.d("AuthViewModel",it.message)
                     User(-1)
                 }
                 .map {
