@@ -2,6 +2,7 @@ package alexander.skornyakov.dagger_lesson1.ui.main
 
 import alexander.skornyakov.dagger_lesson1.BaseActivity
 import alexander.skornyakov.dagger_lesson1.R
+import alexander.skornyakov.dagger_lesson1.ui.main.posts.PostsFragment
 import alexander.skornyakov.dagger_lesson1.ui.main.profile.ProfileFragment
 import android.os.Bundle
 import android.view.Menu
@@ -35,7 +36,7 @@ class MainActivity : BaseActivity(){
 
     private fun testFragment(){
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_container,ProfileFragment())
+            .replace(R.id.main_container,PostsFragment())
             .commit()
     }
 }
