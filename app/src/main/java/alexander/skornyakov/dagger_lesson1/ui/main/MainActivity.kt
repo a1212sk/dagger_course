@@ -11,6 +11,11 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -24,7 +29,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
         setContentView(R.layout.activity_main)
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
-        testFragment()
+        init()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -39,28 +44,51 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
                 sessionManager.logOut()
                 return true
             }
+            android.R.id.home->{
+                if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    return true
+                }
+                else{
+                    return false
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item)
     }
 
-    private fun testFragment(){
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.main_container,PostsFragment())
-            .commit()
+
+    fun isValidNavigation(id:Int):Boolean{
+        return id!=Navigation.findNavController(this,R.id.fragment).currentDestination?.id
     }
+
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
         when(p0.itemId){
             R.id.nav_profile->{
-
+                val navOptions = NavOptions.Builder().setPopUpTo(R.id.main,true).build()
+                Navigation.findNavController(this,R.id.fragment).navigate(R.id.profileScreen
+                ,null,navOptions)
             }
             R.id.nav_posts->{
-
+                if(isValidNavigation(R.id.postsScreen))
+                Navigation.findNavController(this,R.id.fragment).navigate(R.id.postsScreen)
             }
         }
         p0.isChecked = true
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    fun init(){
+        val navController: NavController = Navigation.findNavController(this, R.id.fragment)
+        NavigationUI.setupActionBarWithNavController(this,navController,drawerLayout)
+        NavigationUI.setupWithNavController(navigationView,navController)
+        navigationView.setNavigationItemSelectedListener(this)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return NavigationUI.navigateUp(findNavController(R.id.fragment),drawerLayout)
     }
 }
